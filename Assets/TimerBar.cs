@@ -10,8 +10,8 @@ using System.Collections.Generic;
      public Slider timerBar;
      private bool countDown = true;
  
-     public float countDownTime = 8;
-     public float refillTime = 10;
+     public float countDownTime = -60;
+     public float refillTime = 1;
  
      private void Start()
      {
