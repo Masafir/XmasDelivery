@@ -62,7 +62,7 @@ public class santaController : MonoBehaviour
             transform.Translate(0, 0, walkSpeed * Time.deltaTime);
             if (!animator.GetBool("walk") && !walk)
             {
-                print("move forward : " + walk);
+                // print("move forward : " + walk);
                 animator.SetBool("walk", true);
                 animator.SetBool("idle", false);
                 walk = true;
@@ -79,7 +79,7 @@ public class santaController : MonoBehaviour
             //animations.Play("run");
             if (!animator.GetBool("run") && !run)
             {
-                print("move forward : " + walk);
+                // print("move forward : " + walk);
                 animator.SetBool("run", true);
                 animator.SetBool("walk", false);
                 animator.SetBool("idle", false);
@@ -97,7 +97,7 @@ public class santaController : MonoBehaviour
             transform.Translate(0, 0, -(walkSpeed / 2) * Time.deltaTime);
             if (!animator.GetBool("walk") && !walk)
             {
-                print("move forward : " + walk);
+                // print("move forward : " + walk);
                 animator.SetBool("walk", true);
                 animator.SetBool("idle", false);
                 //animator.SetBool("walk", false);
@@ -128,7 +128,7 @@ public class santaController : MonoBehaviour
         // Si on avance pas et que on recule pas non plus
         if (!Input.GetKey(inputFront) && !Input.GetKey(inputBack) && (walk||run) && !idle)
         {
-            print("move forward : " + idle + walk);
+            // print("move forward : " + idle + walk);
             animator.SetBool("run", false);
             animator.SetBool("walk", false);
             animator.SetBool("idle", true);
