@@ -16,8 +16,11 @@ public class santaController : MonoBehaviour
     public float runSpeed;
     public float turnSpeed;
 
-
-
+    // Game objects
+    GameObject bag;
+    GameObject backSit;
+    Transform collectibleTransform;
+    Transform[] collectibles;
 
     // Inputs
     public string inputFront;
@@ -39,6 +42,7 @@ public class santaController : MonoBehaviour
     {
         animator = gameObject.GetComponent<Animator>();
         playerCollider = gameObject.GetComponent<CapsuleCollider>();
+        bag = GameObject.FindGameObjectWithTag("Bag");
     }
 
 
@@ -49,8 +53,51 @@ public class santaController : MonoBehaviour
             playerCollider.bounds.min.y - 0.1f, playerCollider.bounds.center.z), 0.08f);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        print("triggerA");
+        if(other.tag == "Collectibles" && bag.GetComponentsInChildren<Transform>().Length < 6)
+        {
+            runSpeed -= runSpeed * 0.01f;
+            walkSpeed -= walkSpeed * 0.01f; 
+            collectibleTransform = other.transform;
+            collectibleTransform.transform.parent = bag.transform;
+            collectibleTransform.transform.position = bag.transform.position;
+            print(bag.transform.childCount);
+        }
+    }
 
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        print("collision with  : " + collision.gameObject.tag);
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.tag == "Car")
+        {
+            collectibles = bag.GetComponentsInChildren<Transform>();
+            backSit = GameObject.FindGameObjectWithTag("BackSit");
+            if(collectibles.Length > 0)
+            {
+                int index = 0;
+                foreach(Transform collectible in collectibles)
+                {
+                    index++;
+                    if (index > 1)
+                    {
+                        collectibleTransform = collectible;
+                        collectibleTransform.transform.parent = backSit.transform;
+                        collectibleTransform.transform.position = new Vector3(backSit.transform.position.x, backSit.transform.position.y + (collectible.localScale.y / 3) * index, backSit.transform.position.z);
+                    }
+                    
+                }
+            }
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        
+    }
     void Update()
     {
 
@@ -62,7 +109,7 @@ public class santaController : MonoBehaviour
             transform.Translate(0, 0, walkSpeed * Time.deltaTime);
             if (!animator.GetBool("walk") && !walk)
             {
-                print("move forward : " + walk);
+                //print("move forward : " + walk);
                 animator.SetBool("walk", true);
                 animator.SetBool("idle", false);
                 walk = true;
@@ -79,7 +126,7 @@ public class santaController : MonoBehaviour
             //animations.Play("run");
             if (!animator.GetBool("run") && !run)
             {
-                print("move forward : " + walk);
+                //print("move forward : " + walk);
                 animator.SetBool("run", true);
                 animator.SetBool("walk", false);
                 animator.SetBool("idle", false);
@@ -97,7 +144,7 @@ public class santaController : MonoBehaviour
             transform.Translate(0, 0, -(walkSpeed / 2) * Time.deltaTime);
             if (!animator.GetBool("walk") && !walk)
             {
-                print("move forward : " + walk);
+                //print("move forward : " + walk);
                 animator.SetBool("walk", true);
                 animator.SetBool("idle", false);
                 //animator.SetBool("walk", false);
@@ -128,7 +175,7 @@ public class santaController : MonoBehaviour
         // Si on avance pas et que on recule pas non plus
         if (!Input.GetKey(inputFront) && !Input.GetKey(inputBack) && (walk||run) && !idle)
         {
-            print("move forward : " + idle + walk);
+            //print("move forward : " + idle + walk);
             animator.SetBool("run", false);
             animator.SetBool("walk", false);
             animator.SetBool("idle", true);
