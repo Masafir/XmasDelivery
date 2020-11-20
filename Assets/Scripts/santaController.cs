@@ -55,22 +55,35 @@ public class santaController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print("triggerA");
-        if(other.tag == "Collectibles" && bag.GetComponentsInChildren<Transform>().Length < 6)
+        int deliver = other.transform.Find("Delivery") != null ? other.transform.Find("Delivery").childCount : 1995;
+        //print("triggerA : " + other.tag + " | " + deliver + " | " + bag.transform.childCount);
+
+        if(other.tag == "Collectibles" && bag.GetComponentsInChildren<Transform>().Length < 6 && other.transform.parent.tag != "Delivery")
         {
             runSpeed -= runSpeed * 0.01f;
             walkSpeed -= walkSpeed * 0.01f; 
             collectibleTransform = other.transform;
             collectibleTransform.transform.parent = bag.transform;
             collectibleTransform.transform.position = bag.transform.position;
-            print(bag.transform.childCount);
+            //print(bag.transform.childCount);
+        }
+        
+        if(other.tag == "DeliveryPlate" && other.transform.Find("Delivery").childCount < 1 && bag.transform.childCount > 0)
+        {
+            //print("Delivery empty");
+            collectibles = bag.GetComponentsInChildren<Transform>();
+            Transform present = collectibles[1];
+            Transform delivery = other.transform.Find("Delivery");
+            present.transform.parent = delivery;
+            present.transform.position = delivery.transform.position;
+            
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    /*private void OnCollisionEnter(Collision collision)
     {
         print("collision with  : " + collision.gameObject.tag);
-    }
+    }*/
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject.tag == "Car")

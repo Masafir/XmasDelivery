@@ -24,7 +24,7 @@ public class textScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(bag.GetComponentsInChildren<Transform>().Length != Count && gameObject.GetComponent<TextMeshProUGUI>() != null)
+        if(bag.GetComponentsInChildren<Transform>() != null && bag.GetComponentsInChildren<Transform>().Length != Count && gameObject.GetComponent<TextMeshProUGUI>() != null)
         {
             print("change text");
             gameObject.GetComponent<TextMeshProUGUI>().text = "" + (bag.GetComponentsInChildren<Transform>().Length - 1);
