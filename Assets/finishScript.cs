@@ -35,7 +35,6 @@ public class finishScript : MonoBehaviour
             gameObject.GetComponent<TextMeshProUGUI>().text = " Bravo, vous avez réussi à livrer les cadeaux dans les temps ! ";
             button.SetActive(true);
 
-
         }
 
     }

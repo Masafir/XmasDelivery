@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class santaController : MonoBehaviour
 {
@@ -9,12 +10,14 @@ public class santaController : MonoBehaviour
     private bool walk = false;
     private bool idle = true;
     private bool run = false;
+    private bool fly = false;
  
 
     // Vitesse de déplacement
     public float walkSpeed;
     public float runSpeed;
     public float turnSpeed;
+    private float lightSpeed;
 
     // Game objects
     GameObject bag;
@@ -43,6 +46,7 @@ public class santaController : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
         playerCollider = gameObject.GetComponent<CapsuleCollider>();
         bag = GameObject.FindGameObjectWithTag("Bag");
+        lightSpeed = runSpeed * 5;
     }
 
 
@@ -78,13 +82,18 @@ public class santaController : MonoBehaviour
             present.transform.position = delivery.transform.position;
             
         }
+        if(other.tag == "Car")
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
+        }
     }
 
     /*private void OnCollisionEnter(Collision collision)
     {
         print("collision with  : " + collision.gameObject.tag);
     }*/
-    private void OnCollisionStay(Collision collision)
+    /* private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject.tag == "Car")
         {
@@ -106,7 +115,7 @@ public class santaController : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
     private void OnCollisionExit(Collision collision)
     {
         
@@ -124,9 +133,12 @@ public class santaController : MonoBehaviour
             {
                 //print("move forward : " + walk);
                 animator.SetBool("walk", true);
+                animator.SetBool("run", false);
+                animator.SetBool("fly", false);
                 animator.SetBool("idle", false);
                 walk = true;
                 idle = false;
+                fly = false;
             }
         }
 
@@ -137,18 +149,36 @@ public class santaController : MonoBehaviour
         {
             transform.Translate(0, 0, runSpeed * Time.deltaTime);
             //animations.Play("run");
-            if (!animator.GetBool("run") && !run)
+            if (!animator.GetBool("run") && !fly)
             {
                 //print("move forward : " + walk);
                 animator.SetBool("run", true);
+                animator.SetBool("fly", false);
                 animator.SetBool("walk", false);
                 animator.SetBool("idle", false);
                 run = true;
+                fly = false;
                 walk = false;
                 idle = false;
             }
         }
 
+        if(Input.GetKey(inputFront) && Input.GetKey(KeyCode.Space))
+        {
+            transform.Translate(0, 0, lightSpeed * Time.deltaTime);
+            if (!animator.GetBool("fly") && !fly)
+            {
+                //print("move forward : " + walk);
+                animator.SetBool("fly", true);
+                animator.SetBool("run", false);
+                animator.SetBool("walk", false);
+                animator.SetBool("idle", false);
+                fly = true;
+                run = false;
+                walk = false;
+                idle = false;
+            }
+        }
 
 
         // si on recule
@@ -160,6 +190,7 @@ public class santaController : MonoBehaviour
                 //print("move forward : " + walk);
                 animator.SetBool("walk", true);
                 animator.SetBool("idle", false);
+                animator.SetBool("fly", false);
                 //animator.SetBool("walk", false);
                 idle = false;
                 walk = true;
